@@ -45,3 +45,18 @@ func (c *Client) Add() goa.Endpoint {
 		return res, nil
 	}
 }
+
+// Concat calls the "Concat" function in calcpb.CalcClient interface.
+func (c *Client) Concat() goa.Endpoint {
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		inv := goagrpc.NewInvoker(
+			BuildConcatFunc(c.grpccli, c.opts...),
+			EncodeConcatRequest,
+			DecodeConcatResponse)
+		res, err := inv.Invoke(ctx, v)
+		if err != nil {
+			return nil, goagrpc.DecodeError(err)
+		}
+		return res, nil
+	}
+}

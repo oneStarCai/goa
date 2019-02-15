@@ -24,13 +24,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `calc add
+	return `calc (add|concat)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` calc add --a 5952269320165453119 --b 1828520165265779840` + "\n" +
+	return os.Args[0] + ` calc add --a 8803302123552712831 --b 5401762099778430809` + "\n" +
 		""
 }
 
@@ -49,9 +49,14 @@ func ParseEndpoint(
 		calcAddFlags = flag.NewFlagSet("add", flag.ExitOnError)
 		calcAddAFlag = calcAddFlags.String("a", "REQUIRED", "Left operand")
 		calcAddBFlag = calcAddFlags.String("b", "REQUIRED", "Right operand")
+
+		calcConcatFlags = flag.NewFlagSet("concat", flag.ExitOnError)
+		calcConcatAFlag = calcConcatFlags.String("a", "REQUIRED", "Left operand")
+		calcConcatBFlag = calcConcatFlags.String("b", "REQUIRED", "Right operand")
 	)
 	calcFlags.Usage = calcUsage
 	calcAddFlags.Usage = calcAddUsage
+	calcConcatFlags.Usage = calcConcatUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -90,6 +95,9 @@ func ParseEndpoint(
 			case "add":
 				epf = calcAddFlags
 
+			case "concat":
+				epf = calcConcatFlags
+
 			}
 
 		}
@@ -118,6 +126,9 @@ func ParseEndpoint(
 			case "add":
 				endpoint = c.Add()
 				data, err = calcsvcc.BuildAddPayload(*calcAddAFlag, *calcAddBFlag)
+			case "concat":
+				endpoint = c.Concat()
+				data, err = calcsvcc.BuildConcatPayload(*calcConcatAFlag, *calcConcatBFlag)
 			}
 		}
 	}
@@ -136,6 +147,7 @@ Usage:
 
 COMMAND:
     add: Add implements add.
+    concat: Concat implements concat.
 
 Additional help:
     %s calc COMMAND --help
@@ -149,6 +161,18 @@ Add implements add.
     -b INT: Right operand
 
 Example:
-    `+os.Args[0]+` calc add --a 5952269320165453119 --b 1828520165265779840
+    `+os.Args[0]+` calc add --a 8803302123552712831 --b 5401762099778430809
+`, os.Args[0])
+}
+
+func calcConcatUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] calc concat -a INT -b INT
+
+Concat implements concat.
+    -a INT: Left operand
+    -b INT: Right operand
+
+Example:
+    `+os.Args[0]+` calc concat --a 6747375795581831989 --b 5855163322465186600
 `, os.Args[0])
 }

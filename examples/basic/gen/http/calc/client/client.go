@@ -21,6 +21,9 @@ type Client struct {
 	// Add Doer is the HTTP client used to make requests to the add endpoint.
 	AddDoer goahttp.Doer
 
+	// Concat Doer is the HTTP client used to make requests to the concat endpoint.
+	ConcatDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -42,6 +45,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		AddDoer:             doer,
+		ConcatDoer:          doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -65,6 +69,26 @@ func (c *Client) Add() goa.Endpoint {
 
 		if err != nil {
 			return nil, goahttp.ErrRequestError("calc", "add", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// Concat returns an endpoint that makes HTTP requests to the calc service
+// concat server.
+func (c *Client) Concat() goa.Endpoint {
+	var (
+		decodeResponse = DecodeConcatResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildConcatRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ConcatDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("calc", "concat", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -21,6 +21,7 @@ import (
 type Server struct {
 	Mounts []*MountPoint
 	Add    http.Handler
+	Concat http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -51,9 +52,11 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"Add", "GET", "/add/{a}/{b}"},
+			{"Concat", "GET", "/concat/{a}/{b}"},
 			{"../../gen/http/openapi.json", "GET", "/swagger.json"},
 		},
-		Add: NewAddHandler(e.Add, mux, dec, enc, eh),
+		Add:    NewAddHandler(e.Add, mux, dec, enc, eh),
+		Concat: NewConcatHandler(e.Concat, mux, dec, enc, eh),
 	}
 }
 
@@ -63,11 +66,13 @@ func (s *Server) Service() string { return "calc" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.Add = m(s.Add)
+	s.Concat = m(s.Concat)
 }
 
 // Mount configures the mux to serve the calc endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountAddHandler(mux, h.Add)
+	MountConcatHandler(mux, h.Concat)
 	MountGenHTTPOpenapiJSON(mux, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "../../gen/http/openapi.json")
 	}))
@@ -102,6 +107,58 @@ func NewAddHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "add")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "calc")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountConcatHandler configures the mux to serve the "calc" service "concat"
+// endpoint.
+func MountConcatHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/concat/{a}/{b}", f)
+}
+
+// NewConcatHandler creates a HTTP handler which loads the HTTP request and
+// calls the "calc" service "concat" endpoint.
+func NewConcatHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeConcatRequest(mux, dec)
+		encodeResponse = EncodeConcatResponse(enc)
+		encodeError    = goahttp.ErrorEncoder(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "concat")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "calc")
 		payload, err := decodeRequest(r)
 		if err != nil {

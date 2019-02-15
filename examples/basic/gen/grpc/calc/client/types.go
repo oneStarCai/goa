@@ -29,3 +29,20 @@ func NewAddResponse(message *calcpb.AddResponse) int {
 	result := int(message.Field)
 	return result
 }
+
+// NewConcatRequest builds the gRPC request type from the payload of the
+// "concat" endpoint of the "calc" service.
+func NewConcatRequest(payload *calcsvc.ConcatPayload) *calcpb.ConcatRequest {
+	message := &calcpb.ConcatRequest{
+		A: int32(payload.A),
+		B: int32(payload.B),
+	}
+	return message
+}
+
+// NewConcatResponse builds the result type of the "concat" endpoint of the
+// "calc" service from the gRPC response type.
+func NewConcatResponse(message *calcpb.ConcatResponse) string {
+	result := message.Field
+	return result
+}

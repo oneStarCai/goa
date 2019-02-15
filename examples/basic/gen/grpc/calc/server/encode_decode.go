@@ -44,3 +44,33 @@ func DecodeAddRequest(ctx context.Context, v interface{}, md metadata.MD) (inter
 	}
 	return payload, nil
 }
+
+// EncodeConcatResponse encodes responses from the "calc" service "concat"
+// endpoint.
+func EncodeConcatResponse(ctx context.Context, v interface{}, hdr, trlr *metadata.MD) (interface{}, error) {
+	result, ok := v.(string)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("calc", "concat", "string", v)
+	}
+	resp := NewConcatResponse(result)
+	return resp, nil
+}
+
+// DecodeConcatRequest decodes requests sent to "calc" service "concat"
+// endpoint.
+func DecodeConcatRequest(ctx context.Context, v interface{}, md metadata.MD) (interface{}, error) {
+	var (
+		message *calcpb.ConcatRequest
+		ok      bool
+	)
+	{
+		if message, ok = v.(*calcpb.ConcatRequest); !ok {
+			return nil, goagrpc.ErrInvalidType("calc", "concat", "*calcpb.ConcatRequest", v)
+		}
+	}
+	var payload *calcsvc.ConcatPayload
+	{
+		payload = NewConcatPayload(message)
+	}
+	return payload, nil
+}

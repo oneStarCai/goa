@@ -16,6 +16,8 @@ option go_package = "calcpb";
 service Calc {
 	// Add implements add.
 	rpc Add (AddRequest) returns (AddResponse);
+	// Concat implements concat.
+	rpc Concat (ConcatRequest) returns (ConcatResponse);
 }
 
 message AddRequest {
@@ -27,4 +29,15 @@ message AddRequest {
 
 message AddResponse {
 	sint32 field = 1;
+}
+
+message ConcatRequest {
+	// Left operand
+	sint32 a = 1;
+	// Right operand
+	sint32 b = 2;
+}
+
+message ConcatResponse {
+	string field = 1;
 }

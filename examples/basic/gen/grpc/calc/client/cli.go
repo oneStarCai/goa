@@ -24,7 +24,7 @@ func BuildAddPayload(calcAddMessage string) (*calcsvc.AddPayload, error) {
 		if calcAddMessage != "" {
 			err = json.Unmarshal([]byte(calcAddMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"a\": 8399553735696626949,\n      \"b\": 360622074634248926\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"a\": 9092197569596372935,\n      \"b\": 2937026320033011362\n   }'")
 			}
 		}
 	}
@@ -32,6 +32,29 @@ func BuildAddPayload(calcAddMessage string) (*calcsvc.AddPayload, error) {
 		return nil, err
 	}
 	payload := &calcsvc.AddPayload{
+		A: int(message.A),
+		B: int(message.B),
+	}
+	return payload, nil
+}
+
+// BuildConcatPayload builds the payload for the calc concat endpoint from CLI
+// flags.
+func BuildConcatPayload(calcConcatMessage string) (*calcsvc.ConcatPayload, error) {
+	var err error
+	var message calcpb.ConcatRequest
+	{
+		if calcConcatMessage != "" {
+			err = json.Unmarshal([]byte(calcConcatMessage), &message)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"a\": 5850431520333673251,\n      \"b\": 1089204046671954241\n   }'")
+			}
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	payload := &calcsvc.ConcatPayload{
 		A: int(message.A),
 		B: int(message.B),
 	}

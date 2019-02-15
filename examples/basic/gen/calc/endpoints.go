@@ -16,19 +16,22 @@ import (
 
 // Endpoints wraps the "calc" service endpoints.
 type Endpoints struct {
-	Add goa.Endpoint
+	Add    goa.Endpoint
+	Concat goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "calc" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		Add: NewAddEndpoint(s),
+		Add:    NewAddEndpoint(s),
+		Concat: NewConcatEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "calc" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.Add = m(e.Add)
+	e.Concat = m(e.Concat)
 }
 
 // NewAddEndpoint returns an endpoint function that calls the method "add" of
@@ -37,5 +40,14 @@ func NewAddEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*AddPayload)
 		return s.Add(ctx, p)
+	}
+}
+
+// NewConcatEndpoint returns an endpoint function that calls the method
+// "concat" of service "calc".
+func NewConcatEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ConcatPayload)
+		return s.Concat(ctx, p)
 	}
 }

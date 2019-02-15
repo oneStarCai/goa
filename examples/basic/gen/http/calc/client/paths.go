@@ -16,3 +16,8 @@ import (
 func AddCalcPath(a int, b int) string {
 	return fmt.Sprintf("/add/%v/%v", a, b)
 }
+
+// ConcatCalcPath returns the URL path to the calc service concat HTTP endpoint.
+func ConcatCalcPath(a int, b int) string {
+	return fmt.Sprintf("/concat/%v/%v", a, b)
+}

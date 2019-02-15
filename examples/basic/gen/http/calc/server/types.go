@@ -19,3 +19,11 @@ func NewAddPayload(a int, b int) *calcsvc.AddPayload {
 		B: b,
 	}
 }
+
+// NewConcatPayload builds a calc service concat endpoint payload.
+func NewConcatPayload(a int, b int) *calcsvc.ConcatPayload {
+	return &calcsvc.ConcatPayload{
+		A: a,
+		B: b,
+	}
+}

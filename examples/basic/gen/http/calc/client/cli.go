@@ -45,3 +45,35 @@ func BuildAddPayload(calcAddA string, calcAddB string) (*calcsvc.AddPayload, err
 	}
 	return payload, nil
 }
+
+// BuildConcatPayload builds the payload for the calc concat endpoint from CLI
+// flags.
+func BuildConcatPayload(calcConcatA string, calcConcatB string) (*calcsvc.ConcatPayload, error) {
+	var err error
+	var a int
+	{
+		var v int64
+		v, err = strconv.ParseInt(calcConcatA, 10, 64)
+		a = int(v)
+		if err != nil {
+			err = fmt.Errorf("invalid value for a, must be INT")
+		}
+	}
+	var b int
+	{
+		var v int64
+		v, err = strconv.ParseInt(calcConcatB, 10, 64)
+		b = int(v)
+		if err != nil {
+			err = fmt.Errorf("invalid value for b, must be INT")
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	payload := &calcsvc.ConcatPayload{
+		A: a,
+		B: b,
+	}
+	return payload, nil
+}

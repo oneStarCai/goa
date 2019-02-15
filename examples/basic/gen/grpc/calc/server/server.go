@@ -19,7 +19,8 @@ import (
 
 // Server implements the calcpb.CalcServer interface.
 type Server struct {
-	AddH goagrpc.UnaryHandler
+	AddH    goagrpc.UnaryHandler
+	ConcatH goagrpc.UnaryHandler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -31,7 +32,8 @@ type ErrorNamer interface {
 // New instantiates the server struct with the calc service endpoints.
 func New(e *calcsvc.Endpoints, uh goagrpc.UnaryHandler) *Server {
 	return &Server{
-		AddH: NewAddHandler(e.Add, uh),
+		AddH:    NewAddHandler(e.Add, uh),
+		ConcatH: NewConcatHandler(e.Concat, uh),
 	}
 }
 
@@ -53,4 +55,24 @@ func (s *Server) Add(ctx context.Context, message *calcpb.AddRequest) (*calcpb.A
 		return nil, goagrpc.EncodeError(err)
 	}
 	return resp.(*calcpb.AddResponse), nil
+}
+
+// NewConcatHandler creates a gRPC handler which serves the "calc" service
+// "concat" endpoint.
+func NewConcatHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+	if h == nil {
+		h = goagrpc.NewUnaryHandler(endpoint, DecodeConcatRequest, EncodeConcatResponse)
+	}
+	return h
+}
+
+// Concat implements the "Concat" method in calcpb.CalcServer interface.
+func (s *Server) Concat(ctx context.Context, message *calcpb.ConcatRequest) (*calcpb.ConcatResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "concat")
+	ctx = context.WithValue(ctx, goa.ServiceKey, "calc")
+	resp, err := s.ConcatH.Handle(ctx, message)
+	if err != nil {
+		return nil, goagrpc.EncodeError(err)
+	}
+	return resp.(*calcpb.ConcatResponse), nil
 }

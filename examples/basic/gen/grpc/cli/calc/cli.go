@@ -23,15 +23,15 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `calc add
+	return `calc (add|concat)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` calc add --message '{
-      "a": 8399553735696626949,
-      "b": 360622074634248926
+      "a": 9092197569596372935,
+      "b": 2937026320033011362
    }'` + "\n" +
 		""
 }
@@ -44,9 +44,13 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 
 		calcAddFlags       = flag.NewFlagSet("add", flag.ExitOnError)
 		calcAddMessageFlag = calcAddFlags.String("message", "", "")
+
+		calcConcatFlags       = flag.NewFlagSet("concat", flag.ExitOnError)
+		calcConcatMessageFlag = calcConcatFlags.String("message", "", "")
 	)
 	calcFlags.Usage = calcUsage
 	calcAddFlags.Usage = calcAddUsage
+	calcConcatFlags.Usage = calcConcatUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -85,6 +89,9 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 			case "add":
 				epf = calcAddFlags
 
+			case "concat":
+				epf = calcConcatFlags
+
 			}
 
 		}
@@ -113,6 +120,9 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 			case "add":
 				endpoint = c.Add()
 				data, err = calcsvcc.BuildAddPayload(*calcAddMessageFlag)
+			case "concat":
+				endpoint = c.Concat()
+				data, err = calcsvcc.BuildConcatPayload(*calcConcatMessageFlag)
 			}
 		}
 	}
@@ -131,6 +141,7 @@ Usage:
 
 COMMAND:
     add: Add implements add.
+    concat: Concat implements concat.
 
 Additional help:
     %s calc COMMAND --help
@@ -144,8 +155,22 @@ Add implements add.
 
 Example:
     `+os.Args[0]+` calc add --message '{
-      "a": 8399553735696626949,
-      "b": 360622074634248926
+      "a": 9092197569596372935,
+      "b": 2937026320033011362
+   }'
+`, os.Args[0])
+}
+
+func calcConcatUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] calc concat -message JSON
+
+Concat implements concat.
+    -message JSON: 
+
+Example:
+    `+os.Args[0]+` calc concat --message '{
+      "a": 5850431520333673251,
+      "b": 1089204046671954241
    }'
 `, os.Args[0])
 }

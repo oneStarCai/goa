@@ -16,13 +16,15 @@ import (
 
 // Client is the "calc" service client.
 type Client struct {
-	AddEndpoint goa.Endpoint
+	AddEndpoint    goa.Endpoint
+	ConcatEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "calc" service client given the endpoints.
-func NewClient(add goa.Endpoint) *Client {
+func NewClient(add, concat goa.Endpoint) *Client {
 	return &Client{
-		AddEndpoint: add,
+		AddEndpoint:    add,
+		ConcatEndpoint: concat,
 	}
 }
 
@@ -34,4 +36,14 @@ func (c *Client) Add(ctx context.Context, p *AddPayload) (res int, err error) {
 		return
 	}
 	return ires.(int), nil
+}
+
+// Concat calls the "concat" endpoint of the "calc" service.
+func (c *Client) Concat(ctx context.Context, p *ConcatPayload) (res string, err error) {
+	var ires interface{}
+	ires, err = c.ConcatEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(string), nil
 }

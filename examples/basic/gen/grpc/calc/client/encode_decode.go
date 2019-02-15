@@ -47,3 +47,33 @@ func DecodeAddResponse(ctx context.Context, v interface{}, hdr, trlr metadata.MD
 	res := NewAddResponse(message)
 	return res, nil
 }
+
+// BuildConcatFunc builds the remote method to invoke for "calc" service
+// "concat" endpoint.
+func BuildConcatFunc(grpccli calcpb.CalcClient, cliopts ...grpc.CallOption) goagrpc.RemoteFunc {
+	return func(ctx context.Context, reqpb interface{}, opts ...grpc.CallOption) (interface{}, error) {
+		for _, opt := range cliopts {
+			opts = append(opts, opt)
+		}
+		return grpccli.Concat(ctx, reqpb.(*calcpb.ConcatRequest), opts...)
+	}
+}
+
+// EncodeConcatRequest encodes requests sent to calc concat endpoint.
+func EncodeConcatRequest(ctx context.Context, v interface{}, md *metadata.MD) (interface{}, error) {
+	payload, ok := v.(*calcsvc.ConcatPayload)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("calc", "concat", "*calcsvc.ConcatPayload", v)
+	}
+	return NewConcatRequest(payload), nil
+}
+
+// DecodeConcatResponse decodes responses from the calc concat endpoint.
+func DecodeConcatResponse(ctx context.Context, v interface{}, hdr, trlr metadata.MD) (interface{}, error) {
+	message, ok := v.(*calcpb.ConcatResponse)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("calc", "concat", "*calcpb.ConcatResponse", v)
+	}
+	res := NewConcatResponse(message)
+	return res, nil
+}

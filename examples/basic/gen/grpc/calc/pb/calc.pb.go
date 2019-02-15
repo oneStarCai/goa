@@ -3,13 +3,12 @@
 
 package calcpb
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
-
 import (
-	context "golang.org/x/net/context"
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,7 +20,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type AddRequest struct {
 	// Left operand
@@ -37,16 +36,17 @@ func (m *AddRequest) Reset()         { *m = AddRequest{} }
 func (m *AddRequest) String() string { return proto.CompactTextString(m) }
 func (*AddRequest) ProtoMessage()    {}
 func (*AddRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_calc_304d028581d734b9, []int{0}
+	return fileDescriptor_a2b9900dc883ea68, []int{0}
 }
+
 func (m *AddRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddRequest.Unmarshal(m, b)
 }
 func (m *AddRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AddRequest.Marshal(b, m, deterministic)
 }
-func (dst *AddRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddRequest.Merge(dst, src)
+func (m *AddRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddRequest.Merge(m, src)
 }
 func (m *AddRequest) XXX_Size() int {
 	return xxx_messageInfo_AddRequest.Size(m)
@@ -82,16 +82,17 @@ func (m *AddResponse) Reset()         { *m = AddResponse{} }
 func (m *AddResponse) String() string { return proto.CompactTextString(m) }
 func (*AddResponse) ProtoMessage()    {}
 func (*AddResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_calc_304d028581d734b9, []int{1}
+	return fileDescriptor_a2b9900dc883ea68, []int{1}
 }
+
 func (m *AddResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddResponse.Unmarshal(m, b)
 }
 func (m *AddResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AddResponse.Marshal(b, m, deterministic)
 }
-func (dst *AddResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddResponse.Merge(dst, src)
+func (m *AddResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddResponse.Merge(m, src)
 }
 func (m *AddResponse) XXX_Size() int {
 	return xxx_messageInfo_AddResponse.Size(m)
@@ -109,9 +110,117 @@ func (m *AddResponse) GetField() int32 {
 	return 0
 }
 
+type ConcatRequest struct {
+	// Left operand
+	A int32 `protobuf:"zigzag32,1,opt,name=a,proto3" json:"a,omitempty"`
+	// Right operand
+	B                    int32    `protobuf:"zigzag32,2,opt,name=b,proto3" json:"b,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConcatRequest) Reset()         { *m = ConcatRequest{} }
+func (m *ConcatRequest) String() string { return proto.CompactTextString(m) }
+func (*ConcatRequest) ProtoMessage()    {}
+func (*ConcatRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a2b9900dc883ea68, []int{2}
+}
+
+func (m *ConcatRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConcatRequest.Unmarshal(m, b)
+}
+func (m *ConcatRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConcatRequest.Marshal(b, m, deterministic)
+}
+func (m *ConcatRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConcatRequest.Merge(m, src)
+}
+func (m *ConcatRequest) XXX_Size() int {
+	return xxx_messageInfo_ConcatRequest.Size(m)
+}
+func (m *ConcatRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConcatRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConcatRequest proto.InternalMessageInfo
+
+func (m *ConcatRequest) GetA() int32 {
+	if m != nil {
+		return m.A
+	}
+	return 0
+}
+
+func (m *ConcatRequest) GetB() int32 {
+	if m != nil {
+		return m.B
+	}
+	return 0
+}
+
+type ConcatResponse struct {
+	Field                string   `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConcatResponse) Reset()         { *m = ConcatResponse{} }
+func (m *ConcatResponse) String() string { return proto.CompactTextString(m) }
+func (*ConcatResponse) ProtoMessage()    {}
+func (*ConcatResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a2b9900dc883ea68, []int{3}
+}
+
+func (m *ConcatResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConcatResponse.Unmarshal(m, b)
+}
+func (m *ConcatResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConcatResponse.Marshal(b, m, deterministic)
+}
+func (m *ConcatResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConcatResponse.Merge(m, src)
+}
+func (m *ConcatResponse) XXX_Size() int {
+	return xxx_messageInfo_ConcatResponse.Size(m)
+}
+func (m *ConcatResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConcatResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConcatResponse proto.InternalMessageInfo
+
+func (m *ConcatResponse) GetField() string {
+	if m != nil {
+		return m.Field
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*AddRequest)(nil), "calc.AddRequest")
 	proto.RegisterType((*AddResponse)(nil), "calc.AddResponse")
+	proto.RegisterType((*ConcatRequest)(nil), "calc.ConcatRequest")
+	proto.RegisterType((*ConcatResponse)(nil), "calc.ConcatResponse")
+}
+
+func init() { proto.RegisterFile("calc.proto", fileDescriptor_a2b9900dc883ea68) }
+
+var fileDescriptor_a2b9900dc883ea68 = []byte{
+	// 182 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4a, 0x4e, 0xcc, 0x49,
+	0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x01, 0xb1, 0x95, 0x34, 0xb8, 0xb8, 0x1c, 0x53,
+	0x52, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84, 0x78, 0xb8, 0x18, 0x13, 0x25, 0x18, 0x15,
+	0x18, 0x35, 0x04, 0x83, 0x18, 0x13, 0x41, 0xbc, 0x24, 0x09, 0x26, 0x08, 0x2f, 0x49, 0x49, 0x99,
+	0x8b, 0x1b, 0xac, 0xb2, 0xb8, 0x20, 0x3f, 0xaf, 0x38, 0x55, 0x48, 0x84, 0x8b, 0x35, 0x2d, 0x33,
+	0x35, 0x27, 0x05, 0xaa, 0x1c, 0xc2, 0x51, 0xd2, 0xe6, 0xe2, 0x75, 0xce, 0xcf, 0x4b, 0x4e, 0x2c,
+	0x21, 0xc6, 0x44, 0x35, 0x2e, 0x3e, 0x98, 0x62, 0x6c, 0x86, 0x72, 0x42, 0x0d, 0x35, 0x4a, 0xe7,
+	0x62, 0x71, 0x4e, 0xcc, 0x49, 0x16, 0xd2, 0xe2, 0x62, 0x76, 0x4c, 0x49, 0x11, 0x12, 0xd0, 0x03,
+	0xfb, 0x02, 0xe1, 0x6c, 0x29, 0x41, 0x24, 0x11, 0xa8, 0x49, 0xc6, 0x5c, 0x6c, 0x10, 0xb3, 0x85,
+	0x84, 0x21, 0x92, 0x28, 0xce, 0x92, 0x12, 0x41, 0x15, 0x84, 0x68, 0x72, 0xe2, 0x88, 0x62, 0x03,
+	0x09, 0x17, 0x24, 0x25, 0xb1, 0x81, 0xc3, 0xc8, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x66, 0xd7,
+	0x23, 0x81, 0x31, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -128,6 +237,8 @@ const _ = grpc.SupportPackageIsVersion4
 type CalcClient interface {
 	// Add implements add.
 	Add(ctx context.Context, in *AddRequest, opts ...grpc.CallOption) (*AddResponse, error)
+	// Concat implements concat.
+	Concat(ctx context.Context, in *ConcatRequest, opts ...grpc.CallOption) (*ConcatResponse, error)
 }
 
 type calcClient struct {
@@ -147,10 +258,21 @@ func (c *calcClient) Add(ctx context.Context, in *AddRequest, opts ...grpc.CallO
 	return out, nil
 }
 
+func (c *calcClient) Concat(ctx context.Context, in *ConcatRequest, opts ...grpc.CallOption) (*ConcatResponse, error) {
+	out := new(ConcatResponse)
+	err := c.cc.Invoke(ctx, "/calc.Calc/Concat", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalcServer is the server API for Calc service.
 type CalcServer interface {
 	// Add implements add.
 	Add(context.Context, *AddRequest) (*AddResponse, error)
+	// Concat implements concat.
+	Concat(context.Context, *ConcatRequest) (*ConcatResponse, error)
 }
 
 func RegisterCalcServer(s *grpc.Server, srv CalcServer) {
@@ -175,6 +297,24 @@ func _Calc_Add_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Calc_Concat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConcatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalcServer).Concat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calc.Calc/Concat",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalcServer).Concat(ctx, req.(*ConcatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Calc_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "calc.Calc",
 	HandlerType: (*CalcServer)(nil),
@@ -183,22 +323,11 @@ var _Calc_serviceDesc = grpc.ServiceDesc{
 			MethodName: "Add",
 			Handler:    _Calc_Add_Handler,
 		},
+		{
+			MethodName: "Concat",
+			Handler:    _Calc_Concat_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "calc.proto",
-}
-
-func init() { proto.RegisterFile("calc.proto", fileDescriptor_calc_304d028581d734b9) }
-
-var fileDescriptor_calc_304d028581d734b9 = []byte{
-	// 142 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4a, 0x4e, 0xcc, 0x49,
-	0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x01, 0xb1, 0x95, 0x34, 0xb8, 0xb8, 0x1c, 0x53,
-	0x52, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84, 0x78, 0xb8, 0x18, 0x13, 0x25, 0x18, 0x15,
-	0x18, 0x35, 0x04, 0x83, 0x18, 0x13, 0x41, 0xbc, 0x24, 0x09, 0x26, 0x08, 0x2f, 0x49, 0x49, 0x99,
-	0x8b, 0x1b, 0xac, 0xb2, 0xb8, 0x20, 0x3f, 0xaf, 0x38, 0x55, 0x48, 0x84, 0x8b, 0x35, 0x2d, 0x33,
-	0x35, 0x27, 0x05, 0xaa, 0x1c, 0xc2, 0x31, 0x32, 0xe2, 0x62, 0x71, 0x4e, 0xcc, 0x49, 0x16, 0xd2,
-	0xe2, 0x62, 0x76, 0x4c, 0x49, 0x11, 0x12, 0xd0, 0x03, 0x5b, 0x88, 0xb0, 0x41, 0x4a, 0x10, 0x49,
-	0x04, 0x62, 0x92, 0x13, 0x47, 0x14, 0x1b, 0x48, 0xac, 0x20, 0x29, 0x89, 0x0d, 0xec, 0x32, 0x63,
-	0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x99, 0x6f, 0x19, 0xf6, 0xa7, 0x00, 0x00, 0x00,
 }
