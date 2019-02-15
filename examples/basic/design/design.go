@@ -82,6 +82,40 @@ var _ = Service("calc", func() {
 		})
 	})
 
+	// Method describes a service method (endpoint)
+	Method("concat", func() {
+		// Payload describes the method payload.
+		// Here the payload is an object that consists of two fields.
+		Payload(func() {
+			// Attribute describes an object field
+			Field(1, "a", Int, "Left operand")
+			Field(2, "b", Int, "Right operand")
+			Required("a", "b")
+		})
+
+		// Result describes the method result.
+		// Here the result is a string.
+		Result(String)
+
+		// HTTP describes the HTTP transport mapping.
+		HTTP(func() {
+
+			// Requests to the service consist of HTTP GET requests.
+			// The payload fields are encoded as path parameters.
+			GET("/concat/{a}/{b}")
+			// Responses use a "200 OK" HTTP status.
+			// The result is encoded in the response body.
+			Response(StatusOK)
+		})
+
+		// GRPC describes the gRPC transport mapping.
+		GRPC(func() {
+			// Responses use a "OK" gRPC code.
+			// The result is encoded in the response message.
+			Response(CodeOK)
+		})
+	})
+
 	// Serve the file with relative path ../../gen/http/openapi.json for
 	// requests sent to /swagger.json.
 	Files("/swagger.json", "../../gen/http/openapi.json")

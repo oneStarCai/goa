@@ -2,6 +2,7 @@ package calc
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	calcsvc "goa.design/goa/examples/basic/gen/calc"
@@ -21,4 +22,9 @@ func NewCalc(logger *log.Logger) calcsvc.Service {
 // Add implements add.
 func (s *calcSvc) Add(ctx context.Context, p *calcsvc.AddPayload) (int, error) {
 	return p.A + p.B, nil
+}
+
+// Add implements add.
+func (s *calcSvc) Concat(ctx context.Context, p *calcsvc.ConcatPayload) (string, error) {
+	return fmt.Sprintf("%v%v", p.A, p.B), nil
 }
